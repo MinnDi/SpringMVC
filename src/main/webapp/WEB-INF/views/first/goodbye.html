@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Goodbye Page</title>
+</head>
+
+<body>
+
+Goodbye everyone!
+<a href="/first/hello">Say hello</a>
+or
+<a href="/second/exit">Exit</a>
+ or <a href="/first/goodbye?name=Dilyara&surname=Minnikhanova">Goodbye Dilyara!</a>
+
+<p th:text="${message}"/>
+
+</body>
+
+</html>
