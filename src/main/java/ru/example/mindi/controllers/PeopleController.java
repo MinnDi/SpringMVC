@@ -46,7 +46,7 @@ public class PeopleController {
         return "people/edit";
     }
 
-    @PostMapping("/{id}")
+    @PatchMapping("/{id}")
     public String update(@ModelAttribute("person") Person person, @PathVariable("id") int id) {
         personDao.update(id, person);
         return "redirect:/people";
