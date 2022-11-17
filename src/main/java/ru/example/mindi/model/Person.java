@@ -1,15 +1,44 @@
 package ru.example.mindi.model;
 
+import javax.validation.constraints.*;
+
 public class Person {
     private int id;
+    @NotEmpty(message = "Name should not be empty")
+    @Size(max = 50, min = 2,message = "Name should be no shorter that 2 characters and no longer thar 50 characters")
     private String name;
+    @Min(value = 0, message = "Age should be more than 0")
+    @Max(value = 150, message = "Age should be less than 150")
+    private int age;
+    @NotEmpty(message = "Email should not be empty")
+    @Email(message = "Email should be valid")
+    private String email;
 
-    public Person(int id, String name) {
+    public Person(int id, String name, int age, String email) {
         this.id = id;
         this.name = name;
+        this.age = age;
+        this.email = email;
     }
 
     public Person() {
+    }
+
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public int getId() {

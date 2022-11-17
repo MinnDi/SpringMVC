@@ -12,11 +12,11 @@ public class PersonDao {
     List<Person> people = new ArrayList<>();
 
     {
-        people.add(new Person(++PEOPLE_COUNT, "Dilyara"));
-        people.add(new Person(++PEOPLE_COUNT, "Farid"));
-        people.add(new Person(++PEOPLE_COUNT, "Rezeda"));
-        people.add(new Person(++PEOPLE_COUNT, "Ildar"));
-        people.add(new Person(++PEOPLE_COUNT, "Name"));
+        people.add(new Person(++PEOPLE_COUNT, "Dilyara", 23, "dilyara@mail.com"));
+        people.add(new Person(++PEOPLE_COUNT, "Farid", 27, "farid@mail.com"));
+        people.add(new Person(++PEOPLE_COUNT, "Rezeda", 59, "rezeda@mail.com"));
+        people.add(new Person(++PEOPLE_COUNT, "Ildar", 62, "ildar@mail.com"));
+        people.add(new Person(++PEOPLE_COUNT, "Name", 11, "name@mail.com"));
     }
 
     public List<Person> getPeople() {
@@ -36,5 +36,11 @@ public class PersonDao {
         Person personToBeUpdated = getPerson(id);
 
         personToBeUpdated.setName(updatePerson.getName());
+        personToBeUpdated.setAge(updatePerson.getAge());
+        personToBeUpdated.setEmail(updatePerson.getEmail());
+    }
+
+    public void delete(int id) {
+        people.removeIf(person-> person.getId() == id);
     }
 }
