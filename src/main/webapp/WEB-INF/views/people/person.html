@@ -9,6 +9,7 @@
 Person's name: <p th:text="${person.getName()}">VALUE</p>
 Person's age: <p th:text="${person.getAge()}">VALUE</p>
 Person's email: <p th:text="${person.getEmail()}">VALUE</p>
+Person's address: <p th:text="${person.getAddress()}">VALUE</p>
 Person's Id: <p th:text="${person.getId()}">VALUE</p>
 
 <form th:method="GET" th:action="@{/people/{id}/edit(id=${person.getId()})}">

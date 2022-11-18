@@ -6,9 +6,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.example.mindi.model.Person;
 
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class PersonDao {
@@ -28,14 +27,19 @@ public class PersonDao {
                 .stream().findAny().orElse(null);
     }
 
+    public Optional<Person> getPerson(String email) {
+        return jdbcTemplate.query("select * from person where email = ?", new PersonMapper(), email)
+                .stream().findAny();
+    }
+
     public void save(Person person) {
-        jdbcTemplate.update("insert into person values (1, ?, ?, ?)",
-                person.getName(), person.getAge(), person.getEmail());
+        jdbcTemplate.update("insert into person(name, age, email, address) values (?, ?, ?, ?)",
+                person.getName(), person.getAge(), person.getEmail(), person.getAddress());
     }
 
     public void update(int id, Person updatePerson) {
-        jdbcTemplate.update("update person set name = ?, age = ?, email = ? where id = ?",
-                updatePerson.getName(), updatePerson.getAge(), updatePerson.getEmail(), id);
+        jdbcTemplate.update("update person set name = ?, age = ?, email = ?, address = ? where id = ?",
+                updatePerson.getName(), updatePerson.getAge(), updatePerson.getEmail(), updatePerson.getAddress(), id);
     }
 
     public void delete(int id) {
