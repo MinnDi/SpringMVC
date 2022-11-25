@@ -1,48 +1,63 @@
 package ru.example.mindi.dao;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ru.example.mindi.model.Person;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class PersonDao {
-    private JdbcTemplate jdbcTemplate;
+
+    SessionFactory sessionFactory;
 
     @Autowired
-    public PersonDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public PersonDao(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 
+    @Transactional(readOnly = true)
     public List<Person> getPeople() {
-        return jdbcTemplate.query("select * from person", new BeanPropertyRowMapper<>(Person.class));
+        Session session = sessionFactory.getCurrentSession();
+        List<Person> people = session.createQuery("select p from Person p", Person.class).getResultList();
+        return people;
     }
 
+    @Transactional(readOnly = true)
     public Person getPerson(int id) {
-        return jdbcTemplate.query("select * from person where id = ?", new PersonMapper(), id)
-                .stream().findAny().orElse(null);
+        Session session = sessionFactory.getCurrentSession();
+        return session.createQuery("select p from Person p where id = :id", Person.class).setParameter("id", id).getSingleResult();
     }
 
-    public Optional<Person> getPerson(String email) {
-        return jdbcTemplate.query("select * from person where email = ?", new PersonMapper(), email)
-                .stream().findAny();
+    @Transactional(readOnly = true)
+    public Person getPerson(String email) {
+        Session session = sessionFactory.getCurrentSession();
+        return session.createQuery("select p from Person p where email = :email", Person.class).setParameter("email", email).getSingleResult();
+
     }
 
+    @Transactional
     public void save(Person person) {
-        jdbcTemplate.update("insert into person(name, age, email, address) values (?, ?, ?, ?)",
-                person.getName(), person.getAge(), person.getEmail(), person.getAddress());
+        Session session = sessionFactory.getCurrentSession();
+        session.save(person);
     }
 
+    @Transactional
     public void update(int id, Person updatePerson) {
-        jdbcTemplate.update("update person set name = ?, age = ?, email = ?, address = ? where id = ?",
-                updatePerson.getName(), updatePerson.getAge(), updatePerson.getEmail(), updatePerson.getAddress(), id);
+        Session session = sessionFactory.getCurrentSession();
+        session.createQuery("update Person set name = :name, age = :age, email = :email, address = :address where id = :id", Person.class)
+                .setParameter(":name", updatePerson.getName())
+                .setParameter(":age", updatePerson.getAge())
+                .setParameter(":email", updatePerson.getEmail())
+                .setParameter(":address", updatePerson.getAddress())
+                .executeUpdate();
     }
 
     public void delete(int id) {
-        jdbcTemplate.update("delete from person where id = ?", id);
+        Session session = sessionFactory.getCurrentSession();
+        session.remove(session.get(Person.class, id));
     }
 }
