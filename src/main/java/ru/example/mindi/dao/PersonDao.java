@@ -22,20 +22,20 @@ public class PersonDao {
     @Transactional(readOnly = true)
     public List<Person> getPeople() {
         Session session = sessionFactory.getCurrentSession();
-        List<Person> people = session.createQuery("select p from Person p", Person.class).getResultList();
+        List<Person> people = session.createQuery("select p from Person p", Person.class).list();
         return people;
     }
 
     @Transactional(readOnly = true)
     public Person getPerson(int id) {
         Session session = sessionFactory.getCurrentSession();
-        return session.createQuery("select p from Person p where id = :id", Person.class).setParameter("id", id).getSingleResult();
+        return session.get(Person.class, id);
     }
 
     @Transactional(readOnly = true)
     public Person getPerson(String email) {
         Session session = sessionFactory.getCurrentSession();
-        return session.createQuery("select p from Person p where email = :email", Person.class).setParameter("email", email).getSingleResult();
+        return session.createQuery("select p from Person p where p.email = :email", Person.class).setParameter("email", email).getSingleResult();
 
     }
 
@@ -48,12 +48,11 @@ public class PersonDao {
     @Transactional
     public void update(int id, Person updatePerson) {
         Session session = sessionFactory.getCurrentSession();
-        session.createQuery("update Person set name = :name, age = :age, email = :email, address = :address where id = :id", Person.class)
-                .setParameter(":name", updatePerson.getName())
-                .setParameter(":age", updatePerson.getAge())
-                .setParameter(":email", updatePerson.getEmail())
-                .setParameter(":address", updatePerson.getAddress())
-                .executeUpdate();
+        Person person = session.get(Person.class, id);
+        person.setName(updatePerson.getName());
+        person.setAge(updatePerson.getAge());
+        person.setEmail(updatePerson.getEmail());
+        person.setAddress(updatePerson.getAddress());
     }
 
     public void delete(int id) {

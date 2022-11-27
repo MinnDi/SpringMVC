@@ -1,7 +1,6 @@
 package ru.example.mindi.model;
 
-import jakarta.persistence.*;
-
+import javax.persistence.*;
 import javax.validation.constraints.*;
 
 @Entity
